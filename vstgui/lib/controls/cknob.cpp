@@ -173,6 +173,7 @@ bool CKnob::getFocusPath (CGraphicsPath &outPath)
 //------------------------------------------------------------------------
 void CKnob::draw (CDrawContext *pContext)
 {
+	DebugPrint("CKnob::draw");
 	if (getDrawBackground ())
 	{
 		getDrawBackground ()->draw (pContext, getViewSize (), offset);

@@ -29,9 +29,16 @@ QtBitmap::~QtBitmap ()
 
 bool QtBitmap::load (const CResourceDescription& desc)
 {
-    qDebug() << "loading" << desc.u.name;
-    if (desc.type == CResourceDescription::kStringType)
-        return pixmap.load(desc.u.name);
+    if (desc.type == CResourceDescription::kStringType) {
+        const bool result = pixmap.load (desc.u.name);
+		if (result) {
+			size.x = pixmap.size ().width ();
+			size.y = pixmap.size ().height ();
+		} else {
+			size.x = size.y = 0;
+		}
+		return result;
+	}
     return false;
 }
 
@@ -42,7 +49,7 @@ const CPoint& QtBitmap::getSize () const
 
 IPlatformBitmapPixelAccess* QtBitmap::lockPixels (bool alphaPremultiplied)
 {
-    // XXX
+	qDebug() << "lockPixels";
     return nullptr;
 }
 

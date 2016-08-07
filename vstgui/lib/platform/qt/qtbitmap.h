@@ -21,6 +21,8 @@ public:
 	virtual void setScaleFactor (double factor) override;
 	virtual double getScaleFactor () const override;
 
+	const QPixmap &getQPixmap () const { return pixmap; }
+
 private:
     QPixmap pixmap;
     CPoint size;

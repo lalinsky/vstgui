@@ -1,9 +1,12 @@
 #include "qtframe.h"
+#include "qtdrawcontext.h"
 
 #include <QWidget>
 #include <QElapsedTimer>
 #include <QGuiApplication>
 #include <QToolTip>
+#include <QPainter>
+#include <QPaintEvent>
 #include "../../cdropsource.h"
 #include "../../cgradient.h"
 
@@ -14,9 +17,40 @@ static inline QRect makeQRect (const CRect& rect)
     return QRect (rect.left, rect.top, rect.getWidth (), rect.getHeight ());
 }
 
+static inline CRect makeCRect (const QRect &rect)
+{
+    return CRect (rect.x(), rect.y(), rect.width (), rect.height ());
+}
+
 static inline QPoint makeQPoint (const CPoint& pos)
 {
     return QPoint (pos.x, pos.y);
+}
+
+class QtFrame::ProxyWidget : public QWidget
+{
+public:
+	ProxyWidget (QWidget* parent, IPlatformFrameCallback* callback);
+
+protected:
+	virtual void paintEvent (QPaintEvent* event) override;
+
+private:
+	IPlatformFrameCallback* callback;
+};
+
+QtFrame::ProxyWidget::ProxyWidget (QWidget* parent, IPlatformFrameCallback* callback)
+: QWidget(parent)
+, callback(callback)
+{
+}
+
+void QtFrame::ProxyWidget::paintEvent (QPaintEvent* event)
+{
+	qDebug() << "paintEvent" << event->rect ();
+	QPainter painter (this);
+	QtDrawContext* dc = new QtDrawContext (&painter);
+	callback->platformDrawRect (dc, makeCRect (event->rect ()));
 }
 
 IPlatformFrame* IPlatformFrame::createPlatformFrame (IPlatformFrameCallback* frame, const CRect& size, void* parent, PlatformType parentType)
@@ -41,7 +75,7 @@ uint32_t IPlatformFrame::getTicks ()
 
 QtFrame::QtFrame (IPlatformFrameCallback* frame, const CRect& size, QWidget* parent)
 : IPlatformFrame (frame)
-, widget (new QWidget(parent))
+, widget (new ProxyWidget(parent, frame))
 {
     widget->setGeometry(size.left, size.top, size.getWidth(), size.getHeight());
 }

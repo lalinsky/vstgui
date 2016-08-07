@@ -40,7 +40,8 @@ public:
 	virtual IDataPackage* getClipboard () override;
 
 private:
-    QWidget* widget;
+	class ProxyWidget;
+	ProxyWidget* widget;
 };
 
 } // namespace
