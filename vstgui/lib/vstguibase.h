@@ -174,6 +174,26 @@
 	#include <algorithm>
 	using std::min;
 	using std::max;
+
+#elif defined(__linux__)
+	#define VSTGUI_OPENGL_SUPPORT 0
+	#ifdef __GNUC__
+		#if __cplusplus >= 201103L
+			#define VSTGUI_OVERRIDE_VMETHOD	override
+			#define VSTGUI_FINAL_VMETHOD final
+			#define VSTGUI_RVALUE_REF_SUPPORT 1
+			#define VSTGUI_RANGE_BASED_FOR_LOOP_SUPPORT 1
+			#define VSTGUI_HAS_FUNCTIONAL 1
+		#else
+			#define noexcept
+		#endif
+		#include <stdint.h>
+    #endif
+	#define DEPRECATED_ATTRIBUTE __declspec(deprecated)
+	#include <algorithm>
+	using std::min;
+	using std::max;
+
 #else
 	#error unsupported compiler
 #endif

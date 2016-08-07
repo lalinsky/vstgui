@@ -54,6 +54,7 @@ enum PlatformType {
 	kWindowRef,
 	kNSView,
 	kUIView,
+	kQWidget,
 	
 	kDefaultNative = -1
 };

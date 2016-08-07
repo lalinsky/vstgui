@@ -39,6 +39,7 @@
 #include "cgraphicspath.h"
 #include "cgraphicstransform.h"
 #include <cassert>
+#include <limits>
 
 namespace VSTGUI {
 
@@ -418,7 +419,7 @@ private:
 	{
 		CBitmap* inputBitmap = getInputBitmap ();
 		uint32_t radius = static_cast<uint32_t>(static_cast<double>(getProperty (Property::kRadius).getInteger ()) * inputBitmap->getPlatformBitmap ()->getScaleFactor ());
-		if (inputBitmap == 0 || radius == UINT_MAX)
+		if (inputBitmap == 0 || radius == std::numeric_limits<uint32_t>::max ())
 			return false;
 		if (radius < 2)
 		{
