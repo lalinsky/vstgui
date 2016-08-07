@@ -21,7 +21,9 @@ static inline QPoint makeQPoint (const CPoint& pos)
 
 IPlatformFrame* IPlatformFrame::createPlatformFrame (IPlatformFrameCallback* frame, const CRect& size, void* parent, PlatformType parentType)
 {
-	return new QtFrame (frame, size, (QWidget*)parent);
+	if (parentType == kQWidget || parentType == kDefaultNative)
+		return new QtFrame (frame, size, (QWidget*)parent);
+	return nullptr;
 }
 
 CGradient* CGradient::create (const ColorStopMap& colorStopMap)
