@@ -11,6 +11,7 @@ class QtBitmap : public IPlatformBitmap
 public:
 	QtBitmap();
 	QtBitmap(const CPoint& size);
+	QtBitmap(const QImage& image);
 	virtual ~QtBitmap();
 
 	virtual bool load (const CResourceDescription& desc) override;

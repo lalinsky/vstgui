@@ -176,7 +176,6 @@
 	using std::max;
 
 #elif defined(__linux__)
-	#define VSTGUI_OPENGL_SUPPORT 0
 	#ifdef __GNUC__
 		#if __cplusplus >= 201103L
 			#define VSTGUI_OVERRIDE_VMETHOD	override

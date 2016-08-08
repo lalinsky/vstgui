@@ -243,6 +243,12 @@ IPlatformOptionMenu* QtFrame::createPlatformOptionMenu ()
 	return NULL;
 }
 
+IPlatformOpenGLView* QtFrame::createPlatformOpenGLView ()
+{
+	vstgui_assert (false, "not implemented");
+	return NULL;
+}
+
 IPlatformViewLayer* QtFrame::createPlatformViewLayer (IPlatformViewLayerDelegate* drawDelegate, IPlatformViewLayer* parentLayer)
 {
 	vstgui_assert (false, "not implemented");

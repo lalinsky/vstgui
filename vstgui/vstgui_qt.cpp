@@ -40,4 +40,5 @@
 #include "lib/platform/qt/qtframe.cpp"
 #include "lib/platform/qt/qttimer.cpp"
 #include "lib/platform/qt/qtdrawcontext.cpp"
+#include "lib/platform/qt/qtfileselector.cpp"
 

@@ -29,6 +29,7 @@ public:
 
 	virtual IPlatformTextEdit* createPlatformTextEdit (IPlatformTextEditCallback* textEdit) override; ///< create a native text edit control
 	virtual IPlatformOptionMenu* createPlatformOptionMenu () override; ///< create a native popup menu
+	virtual IPlatformOpenGLView* createPlatformOpenGLView () override;
 	
 	virtual IPlatformViewLayer* createPlatformViewLayer (IPlatformViewLayerDelegate* drawDelegate, IPlatformViewLayer* parentLayer = 0) override; ///< create a native view layer, may return 0 if not supported
 	

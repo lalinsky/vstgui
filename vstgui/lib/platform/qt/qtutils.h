@@ -40,7 +40,12 @@ inline QPoint makeQPointF (const CPoint& pos)
 
 inline CPoint makeCPoint (const QPointF& pos)
 {
-	return CPoint (pos.x(), pos.y());
+	return CPoint (pos.x (), pos.y ());
+}
+
+inline CPoint makeCPoint (const QSizeF& size)
+{
+	return CPoint (size.width (), size.height ());
 }
 
 } // namespace

@@ -158,7 +158,7 @@ bool Parser::parse (IContentProvider* provider, IHandler* _handler)
 				}
 				#if DEBUG
 				XML_Size currentLineNumber = XML_GetCurrentLineNumber (PARSER);
-				DebugPrint ("XML Parser Error on line: %d\n", currentLineNumber);
+				DebugPrint ("XML Parser Error on line: %lu\n", currentLineNumber);
 				DebugPrint ("%s\n", XML_ErrorString (XML_GetErrorCode (PARSER)));
 				int offset, size;
 				const char* inputContext = XML_GetInputContext (PARSER, &offset, &size);
