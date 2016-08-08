@@ -63,7 +63,12 @@ void vstgui_assert (Expect expect, const char* = 0)
 namespace VSTGUI {
 
 //-----------------------------------------------------------------------------
-extern void DebugPrint (const char *format, ...);
+#ifdef __GNUC__
+#define FORMAT_PRINTF_ATTRIBUTE  __attribute__ ((format (printf, 1, 2)))
+#else
+#define FORMAT_PRINTF_ATTRIBUTE
+#endif
+extern void DebugPrint (const char *format, ...) FORMAT_PRINTF_ATTRIBUTE;
 
 //-----------------------------------------------------------------------------
 class TimeWatch

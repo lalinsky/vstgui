@@ -853,14 +853,14 @@ void CView::removeAllAnimations ()
 void CView::dumpInfo ()
 {
 	CRect viewRect = getViewSize (viewRect);
-	DebugPrint ("left:%4d, top:%4d, width:%4d, height:%4d ", viewRect.left, viewRect.top, viewRect.getWidth (), viewRect.getHeight ());
+	DebugPrint ("left:%.2f, top:%.2f, width:%.2f, height:%.2f ", viewRect.left, viewRect.top, viewRect.getWidth (), viewRect.getHeight ());
 	if (getMouseEnabled ())
 		DebugPrint ("(Mouse Enabled) ");
 	if (getTransparency ())
 		DebugPrint ("(Transparent) ");
 	CRect mouseRect = getMouseableArea (mouseRect);
 	if (mouseRect != viewRect)
-		DebugPrint (" (Mouseable Area: left:%4d, top:%4d, width:%4d, height:%4d ", mouseRect.left, mouseRect.top, mouseRect.getWidth (), mouseRect.getHeight ());
+		DebugPrint (" (Mouseable Area: left:%.2f, top:%.2f, width:%.2f, height:%.2f ", mouseRect.left, mouseRect.top, mouseRect.getWidth (), mouseRect.getHeight ());
 }
 #endif
 
