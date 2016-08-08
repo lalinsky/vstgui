@@ -13,7 +13,7 @@ public:
 	virtual void drawLine (const LinePair& line) override;
 	virtual void drawLines (const LineList& lines) override;
 	virtual void drawPolygon (const PointList& polygonPointList, const CDrawStyle drawStyle = kDrawStroked) override {}
-	virtual void drawRect (const CRect &rect, const CDrawStyle drawStyle = kDrawStroked) override {}
+	virtual void drawRect (const CRect &rect, const CDrawStyle drawStyle = kDrawStroked) override;
 	virtual void drawArc (const CRect &rect, const float startAngle1, const float endAngle2, const CDrawStyle drawStyle = kDrawStroked) override {}
 	virtual void drawEllipse (const CRect &rect, const CDrawStyle drawStyle = kDrawStroked) override {}
 	virtual void drawPoint (const CPoint &point, const CColor& color) override {}

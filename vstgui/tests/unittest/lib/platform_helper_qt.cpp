@@ -2,11 +2,11 @@
 // VST Plug-Ins SDK
 // VSTGUI: Graphical User Interface Framework for VST plugins
 //
-// Version 4.3
+// Version 4.2
 //
 //-----------------------------------------------------------------------------
 // VSTGUI LICENSE
-// (c) 2015, Steinberg Media Technologies, All Rights Reserved
+// (c) 2013, Steinberg Media Technologies, All Rights Reserved
 //-----------------------------------------------------------------------------
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -32,75 +32,38 @@
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 //-----------------------------------------------------------------------------
 
-#ifndef __vstguidebug__
-#define __vstguidebug__
+#include "platform_helper.h"
 
-#include "vstguibase.h"
-
-#if DEBUG
-
-#include <ctime>
-#include <cassert>
-#include <stdexcept>
-
-// assert handling
-
-#if ENABLE_UNIT_TESTS
-template<typename Expect>
-void vstgui_assert (Expect expect, const char* str = nullptr)
-{
-	if (!expect)
-		throw std::logic_error (str ? str : "unknown");
-}
-#else
-template<typename Expect>
-void vstgui_assert (Expect expect, const char* = 0)
-{
-	assert (expect);
-}
-#endif
-
+#include <QApplication>
+#include <QWidget>
 
 namespace VSTGUI {
+namespace UnitTest {
 
-//-----------------------------------------------------------------------------
-#ifdef __GNUC__
-#define FORMAT_PRINTF_ATTRIBUTE  __attribute__ ((format (printf, 1, 2)))
-#else
-#define FORMAT_PRINTF_ATTRIBUTE
-#endif
-extern void DebugPrint (const char *format, ...) FORMAT_PRINTF_ATTRIBUTE;
-
-//-----------------------------------------------------------------------------
-class TimeWatch
+struct QtPlatformHandle : PlatformParentHandle
 {
-public:
-	TimeWatch (UTF8StringPtr name = 0, bool startNow = true);
-	~TimeWatch ();
-	
-	void start ();
-	void stop ();
+	QWidget* widget { nullptr };
 
-protected:
-	UTF8StringBuffer name;
-	std::clock_t startTime;
+	QtPlatformHandle ()
+	{
+		widget = new QWidget ();
+	}
+	
+	~QtPlatformHandle ()
+	{
+		delete widget;
+	}
+
+	virtual PlatformType getType () const override { return kQWidget; }
+	virtual void* getHandle () const override { return widget; }
+	virtual void forceRedraw () override {}
 };
 
-} // namespace
-
-#else
-
-#if ENABLE_UNIT_TESTS
-template<typename Expect>
-void vstgui_assert (Expect expect, const char* str = 0)
+SharedPointer<PlatformParentHandle> PlatformParentHandle::create()
 {
-	if (!expect)
-		throw std::logic_error (str ? str : "unknown");
+	return owned (dynamic_cast<PlatformParentHandle*> (new QtPlatformHandle ()));
 }
-#else
-#define vstgui_assert(...)
-#endif
 
-#endif // DEBUG
+} // UnitTest
+} // VSTGUI
 
-#endif

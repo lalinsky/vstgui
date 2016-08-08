@@ -50,7 +50,7 @@ QtFrame::ProxyWidget::ProxyWidget (QWidget* parent, IPlatformFrameCallback* call
 : QWidget(parent)
 , callback(callback)
 {
-	setMouseTracking(true);
+//	setMouseTracking(true);
 }
 
 void QtFrame::ProxyWidget::paintEvent (QPaintEvent* event)

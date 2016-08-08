@@ -289,11 +289,20 @@ namespace VSTGUI { void* gBundleRef = CFBundleGetMainBundle (); }
 void* hInstance = nullptr;
 #endif
 
+#ifdef USE_QT
+#include <QApplication>
+#endif
+
 int main ()
 {
 #if WINDOWS
 	CoInitialize (nullptr);
 	hInstance = GetModuleHandle (nullptr);
+#endif
+#ifdef USE_QT
+	int fakeArgc = 0;
+	char* fakeArgv[] = {};
+	QApplication app (fakeArgc, fakeArgv);
 #endif
 	return VSTGUI::UnitTest::RunTests ();
 }
