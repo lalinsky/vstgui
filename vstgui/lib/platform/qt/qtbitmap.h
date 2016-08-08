@@ -2,16 +2,16 @@
 #define __qtbitmap__
 
 #include "../iplatformbitmap.h"
-#include <QPixmap>
+#include <QImage>
 
 namespace VSTGUI {
 
 class QtBitmap : public IPlatformBitmap
 {
 public:
-    QtBitmap();
-    QtBitmap(const CPoint& size);
-    virtual ~QtBitmap();
+	QtBitmap();
+	QtBitmap(const CPoint& size);
+	virtual ~QtBitmap();
 
 	virtual bool load (const CResourceDescription& desc) override;
 	virtual const CPoint& getSize () const override;
@@ -21,11 +21,12 @@ public:
 	virtual void setScaleFactor (double factor) override;
 	virtual double getScaleFactor () const override;
 
-	const QPixmap &getQPixmap () const { return pixmap; }
+	const QImage &getQImage () const { return image; }
 
 private:
-    QPixmap pixmap;
-    CPoint size;
+	QImage image;
+	CPoint size;
+	double scaleFactor { 1. };
 };
 
 } // namespace

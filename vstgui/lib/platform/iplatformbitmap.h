@@ -59,7 +59,7 @@ public:
 	virtual bool load (const CResourceDescription& desc) = 0;
 	virtual const CPoint& getSize () const = 0;
 
-	virtual IPlatformBitmapPixelAccess* lockPixels (bool alphaPremultiplied) = 0;	// you need to forget the result after use.
+	virtual IPlatformBitmapPixelAccess* lockPixels (bool alphaPremultiplied) = 0;
 	
 	virtual void setScaleFactor (double factor) = 0;
 	virtual double getScaleFactor () const = 0;

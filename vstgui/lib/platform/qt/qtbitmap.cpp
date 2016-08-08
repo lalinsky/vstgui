@@ -6,6 +6,28 @@
 
 namespace VSTGUI {
 
+struct QtBitmapPixelAccess : public IPlatformBitmapPixelAccess
+{
+	QtBitmapPixelAccess (QImage* image) : image (image) {}
+
+	virtual uint8_t* getAddress () const override
+	{
+		return image->bits ();
+	}
+
+	virtual uint32_t getBytesPerRow () const override
+	{
+		return image->bytesPerLine ();
+	}
+
+	virtual PixelFormat getPixelFormat () const override
+	{
+		return kARGB;
+	}
+
+	QImage* image;
+};
+
 IPlatformBitmap* IPlatformBitmap::create (CPoint* size)
 {
     if (size)
@@ -18,9 +40,10 @@ QtBitmap::QtBitmap ()
 }
 
 QtBitmap::QtBitmap (const CPoint& size)
-: pixmap(size.x, size.y)
-, size(size)
+: image (size.x, size.y, QImage::Format_ARGB32)
+, size (size)
 {
+	image.fill (qRgba (0, 0, 0, 0));
 }
 
 QtBitmap::~QtBitmap ()
@@ -30,13 +53,11 @@ QtBitmap::~QtBitmap ()
 bool QtBitmap::load (const CResourceDescription& desc)
 {
     if (desc.type == CResourceDescription::kStringType) {
-        const bool result = pixmap.load (desc.u.name);
-		if (result) {
-			size.x = pixmap.size ().width ();
-			size.y = pixmap.size ().height ();
-		} else {
-			size.x = size.y = 0;
-		}
+        const bool result = image.load (desc.u.name);
+		if (result && image.format () != QImage::Format_ARGB32)
+			image = image.convertToFormat (QImage::Format_ARGB32);
+		size.x = image.size ().width ();
+		size.y = image.size ().height ();
 		return result;
 	}
     return false;
@@ -49,17 +70,17 @@ const CPoint& QtBitmap::getSize () const
 
 IPlatformBitmapPixelAccess* QtBitmap::lockPixels (bool alphaPremultiplied)
 {
-	qDebug() << "lockPixels";
-    return nullptr;
+	return new QtBitmapPixelAccess (&image);
 }
 
-void QtBitmap::setScaleFactor (double)
+void QtBitmap::setScaleFactor (double factor)
 {
+	scaleFactor = factor;
 }
 
 double QtBitmap::getScaleFactor () const
 {
-    return 1;
+    return scaleFactor;
 }
 
 } // namespace
