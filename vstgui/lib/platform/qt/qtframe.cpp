@@ -8,10 +8,24 @@
 #include <QToolTip>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QMouseEvent>
+#include <QWheelEvent>
 #include "../../cdropsource.h"
 #include "../../cgradient.h"
 
 namespace VSTGUI {
+
+inline CButtonState convertMouseButtons (const Qt::MouseButtons& b)
+{
+	CButtonState buttons = 0;
+	if (b & Qt::LeftButton)
+		buttons |= kLButton;
+	if (b & Qt::RightButton)
+		buttons |= kRButton;
+	if (b & Qt::MiddleButton)
+		buttons |= kMButton;
+	return buttons;
+}
 
 class QtFrame::ProxyWidget : public QWidget
 {
@@ -20,15 +34,23 @@ public:
 
 protected:
 	virtual void paintEvent (QPaintEvent* event) override;
+	virtual void mousePressEvent (QMouseEvent* event) override;
+	virtual void mouseReleaseEvent (QMouseEvent* event) override;
+	virtual void mouseMoveEvent (QMouseEvent* event) override;
+	virtual void leaveEvent (QEvent* event) override;
+	virtual void wheelEvent (QWheelEvent* event) override;
 
 private:
 	IPlatformFrameCallback* callback;
+	CPoint lastMousePos;
+	CButtonState lastMouseButtons;
 };
 
 QtFrame::ProxyWidget::ProxyWidget (QWidget* parent, IPlatformFrameCallback* callback)
 : QWidget(parent)
 , callback(callback)
 {
+	setMouseTracking(true);
 }
 
 void QtFrame::ProxyWidget::paintEvent (QPaintEvent* event)
@@ -36,6 +58,43 @@ void QtFrame::ProxyWidget::paintEvent (QPaintEvent* event)
 	QPainter painter (this);
 	QtDrawContext* dc = new QtDrawContext (&painter);
 	callback->platformDrawRect (dc, makeCRect (event->rect ()));
+}
+
+void QtFrame::ProxyWidget::mousePressEvent (QMouseEvent* event)
+{
+	lastMousePos = makeCPoint (event->pos ());
+	lastMouseButtons = convertMouseButtons (event->buttons ());
+	callback->platformOnMouseDown (lastMousePos, lastMouseButtons);
+}
+
+void QtFrame::ProxyWidget::mouseReleaseEvent (QMouseEvent* event)
+{
+	lastMousePos = makeCPoint (event->pos ());
+	lastMouseButtons = convertMouseButtons (event->buttons ());
+	callback->platformOnMouseUp (lastMousePos, lastMouseButtons);
+}
+
+void QtFrame::ProxyWidget::mouseMoveEvent (QMouseEvent* event)
+{
+	lastMousePos = makeCPoint (event->pos ());
+	lastMouseButtons = convertMouseButtons (event->buttons ());
+	callback->platformOnMouseMoved (lastMousePos, lastMouseButtons);
+}
+
+void QtFrame::ProxyWidget::leaveEvent (QEvent* event)
+{
+	callback->platformOnMouseExited (lastMousePos, lastMouseButtons);
+}
+
+void QtFrame::ProxyWidget::wheelEvent (QWheelEvent* event)
+{
+	lastMousePos = makeCPoint (event->pos ());
+	lastMouseButtons = convertMouseButtons (event->buttons ());
+	const auto degrees = event->angleDelta () / 8;
+	if (degrees.x() != 0)
+		callback->platformOnMouseWheel (lastMousePos, kMouseWheelAxisX, degrees.x() / 15, lastMouseButtons);
+	if (degrees.y() != 0)
+		callback->platformOnMouseWheel (lastMousePos, kMouseWheelAxisY, degrees.y() / 15, lastMouseButtons);
 }
 
 IPlatformFrame* IPlatformFrame::createPlatformFrame (IPlatformFrameCallback* frame, const CRect& size, void* parent, PlatformType parentType)
@@ -103,14 +162,7 @@ bool QtFrame::getCurrentMousePosition (CPoint& mousePosition) const
 
 bool QtFrame::getCurrentMouseButtons (CButtonState& buttons) const
 {
-	Qt::MouseButtons b = qApp->mouseButtons ();
-	buttons = 0;
-	if (b & Qt::LeftButton)
-		buttons |= kLButton;
-	if (b & Qt::RightButton)
-		buttons |= kRButton;
-	if (b & Qt::MiddleButton)
-		buttons |= kMButton;
+	buttons = convertMouseButtons (qApp->mouseButtons ());
 	return true;
 }
 
