@@ -106,8 +106,7 @@ IPlatformFrame* IPlatformFrame::createPlatformFrame (IPlatformFrameCallback* fra
 
 CGradient* CGradient::create (const ColorStopMap& colorStopMap)
 {
-	vstgui_assert (false, "not implemented");
-	return NULL;
+	return new CGradient (colorStopMap);
 }
 
 uint32_t IPlatformFrame::getTicks ()
